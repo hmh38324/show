@@ -3,131 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>杭州卷烟厂卷包车间第三届职工艺术节暨"游戏的E术"游园会 - 排行榜</title>
+    <title>游园活动排行榜</title>
     <link rel="stylesheet" href="style.css">
+    <meta name="description" content="游园活动八个游戏的总分排行榜">
+    <meta name="keywords" content="排行榜,游园活动,积分,游戏">
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1 class="title">杭州卷烟厂卷包车间第三届职工艺术节</h1>
-            <h2 class="subtitle">"游戏的E术"游园会 - 排行榜</h2>
-            <p class="description">
-                为迎接下半年紧张生产任务，庆祝双节，以"线下趣味互动+线上数字化挑战"相结合的趣味游戏为载体，
-                进一步凝聚卷包车间"家文化"。通过轻松互动的活动形式，增强员工间的情感联结与协作意识，
-                营造温馨和谐的团队氛围。
-            </p>
+        <!-- 头部 -->
+        <header>
+            <h1>🏆 游园活动排行榜</h1>
+            <p>八个游戏总分排行榜</p>
+            <div class="header-buttons">
+                <button class="refresh-btn" onclick="refreshLeaderboard()">🔄 刷新</button>
+                <button class="refresh-btn" onclick="exportTotalLeaderboard()">📤 导出</button>
+            </div>
         </header>
 
-        <!-- 游戏筛选按钮组 -->
-        <div class="game-filter-tabs">
-            <button class="game-tab active" data-game="all">
-                <span class="tab-icon">🏆</span>
-                <span class="tab-text">总排行榜</span>
-            </button>
-            <button class="game-tab" data-game="完美拼图">
-                <span class="tab-icon">🧩</span>
-                <span class="tab-text">完美拼图</span>
-            </button>
-            <button class="game-tab" data-game="牌号对对碰">
-                <span class="tab-icon">🃏</span>
-                <span class="tab-text">牌号对对碰</span>
-            </button>
-            <button class="game-tab" data-game="色彩陷阱">
-                <span class="tab-icon">🎨</span>
-                <span class="tab-text">色彩陷阱</span>
-            </button>
-            <button class="game-tab" data-game="数字炸弹">
-                <span class="tab-icon">💣</span>
-                <span class="tab-text">数字炸弹</span>
-            </button>
-            <button class="game-tab" data-game="拼速达人">
-                <span class="tab-icon">⚡</span>
-                <span class="tab-text">拼速达人</span>
-            </button>
-            <button class="game-tab" data-game="碰碰乐">
-                <span class="tab-icon">🚗</span>
-                <span class="tab-text">碰碰乐</span>
-            </button>
-            <button class="game-tab" data-game="沙包投掷">
-                <span class="tab-icon">🎯</span>
-                <span class="tab-text">沙包投掷</span>
-            </button>
-            <button class="game-tab" data-game="巧手取棒">
-                <span class="tab-icon">🥢</span>
-                <span class="tab-text">巧手取棒</span>
-            </button>
+        <!-- 加载状态 -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>正在加载排行榜数据...</p>
         </div>
 
-        <div class="controls">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="搜索工号或姓名...">
-                <button id="searchBtn">搜索</button>
-            </div>
-            <div class="filter-box">
-                <select id="rankFilter">
-                    <option value="all">全部排名</option>
-                    <option value="top10">前10名</option>
-                    <option value="top50">前50名</option>
-                    <option value="top100">前100名</option>
-                </select>
-            </div>
-            <div class="stats">
-                <span id="totalCount">总参与人数: 440人</span>
-            </div>
-        </div>
+        <!-- 消息提示 -->
+        <div id="message" class="message hidden"></div>
 
-        <div class="table-container">
-            <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th class="rank-col">排名</th>
-                        <th class="id-col">工号</th>
-                        <th class="name-col">姓名</th>
-                        <th class="game-col" title="完美拼图">完美拼图</th>
-                        <th class="game-col" title="牌号对对碰">牌号对对碰</th>
-                        <th class="game-col" title="色彩陷阱">色彩陷阱</th>
-                        <th class="game-col" title="数字炸弹">数字炸弹</th>
-                        <th class="game-col" title="拼速达人">拼速达人</th>
-                        <th class="game-col" title="碰碰乐">碰碰乐</th>
-                        <th class="game-col" title="沙包投掷">沙包投掷</th>
-                        <th class="game-col" title="巧手取棒">巧手取棒</th>
-                        <th class="total-col">总分</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <!-- 数据将通过JavaScript动态加载 -->
-                </tbody>
-            </table>
-        </div>
-
-        <div class="legend">
-            <h3>游戏说明</h3>
-            <div class="legend-content">
-                <div class="online-games">
-                    <h4>线上游戏（前4个）</h4>
-                    <ul>
-                        <li><strong>完美拼图：</strong>考验空间想象力和耐心</li>
-                        <li><strong>牌号对对碰：</strong>测试记忆力和反应速度</li>
-                        <li><strong>色彩陷阱：</strong>挑战色彩识别和专注力</li>
-                        <li><strong>数字炸弹：</strong>锻炼逻辑思维和判断力</li>
-                    </ul>
+        <!-- 总体统计 -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalParticipants">-</div>
+                    <div class="stat-label">参与人数</div>
                 </div>
-                <div class="offline-games">
-                    <h4>线下游戏（后4个）</h4>
-                    <ul>
-                        <li><strong>拼速达人：</strong>团队协作和速度挑战</li>
-                        <li><strong>碰碰乐：</strong>趣味互动和协调能力</li>
-                        <li><strong>沙包投掷：</strong>精准度和技巧考验</li>
-                        <li><strong>巧手取棒：</strong>精细操作和稳定性测试</li>
-                    </ul>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎮</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalGames">8</div>
+                    <div class="stat-label">游戏总数</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalScore">-</div>
+                    <div class="stat-label">总积分</div>
                 </div>
             </div>
         </div>
 
-        <footer class="footer">
-            <p>杭州卷烟厂卷包车间 | 第三届职工艺术节暨"游戏的E术"游园会</p>
-            <p>感谢所有参与员工的热情参与，让我们共同营造温馨和谐的团队氛围！</p>
-        </footer>
+        <!-- 游戏选择器 -->
+        <div class="game-selector">
+            <button class="game-tab active" data-game="all">全部游戏</button>
+            <button class="game-tab" data-game="0">🧩 完美拼图</button>
+            <button class="game-tab" data-game="1">🃏 牌号对对碰</button>
+            <button class="game-tab" data-game="2">🎨 色彩陷阱</button>
+            <button class="game-tab" data-game="3">💣 数字炸弹</button>
+            <button class="game-tab" data-game="4">⚡ 拼速达人</button>
+            <button class="game-tab" data-game="5">🚗 碰碰乐</button>
+            <button class="game-tab" data-game="6">🎯 沙包投掷</button>
+            <button class="game-tab" data-game="7">🥢 巧手取棒</button>
+        </div>
+
+        <!-- 排行榜内容 -->
+        <div class="leaderboard-container">
+            <div class="leaderboard-header">
+                <h2 id="leaderboardTitle">全部游戏排行榜</h2>
+                <div class="leaderboard-stats">
+                    <span id="leaderboardCount">0 人参与</span>
+                </div>
+            </div>
+
+            <!-- 排行榜列表 -->
+            <div class="leaderboard-list" id="leaderboardList">
+                <!-- 排行榜项目将通过JavaScript动态生成 -->
+            </div>
+
+            <!-- 空状态 -->
+            <div class="empty-state hidden" id="emptyState">
+                <div class="empty-icon">📊</div>
+                <h3>暂无数据</h3>
+                <p>该游戏还没有积分记录</p>
+            </div>
+        </div>
+
+        <!-- 游戏详情弹窗 -->
+        <div id="gameDetailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="gameDetailTitle">游戏详情</h2>
+                    <span class="close" onclick="closeGameDetail()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="game-stats" id="gameStats">
+                        <!-- 游戏统计信息 -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
