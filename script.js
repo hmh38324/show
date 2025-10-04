@@ -1,6 +1,7 @@
 // 全局变量
 let leaderboardData = [];
 let filteredData = [];
+let currentGameFilter = 'all';
 
 // 游戏配置
 const gameConfig = {
@@ -89,10 +90,15 @@ function renderLeaderboard() {
 function createPlayerRow(player, index) {
     const row = document.createElement('tr');
     
-    // 排名
+    // 排名 - 如果是游戏筛选，显示当前筛选中的排名
     const rankCell = document.createElement('td');
-    rankCell.textContent = player.rank;
-    rankCell.className = getRankClass(player.rank);
+    if (currentGameFilter === 'all') {
+        rankCell.textContent = player.rank;
+        rankCell.className = getRankClass(player.rank);
+    } else {
+        rankCell.textContent = index + 1;
+        rankCell.className = getRankClass(index + 1);
+    }
     row.appendChild(rankCell);
     
     // 工号
@@ -111,6 +117,15 @@ function createPlayerRow(player, index) {
         const score = player.scores[game.name];
         scoreCell.textContent = score;
         scoreCell.className = getScoreClass(score, game.maxScore);
+        
+        // 如果是当前筛选的游戏，高亮显示
+        if (currentGameFilter === game.name) {
+            scoreCell.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            scoreCell.style.color = 'white';
+            scoreCell.style.fontWeight = 'bold';
+            scoreCell.style.borderRadius = '8px';
+        }
+        
         row.appendChild(scoreCell);
     });
     
@@ -144,6 +159,15 @@ function getScoreClass(score, maxScore) {
 
 // 设置事件监听器
 function setupEventListeners() {
+    // 游戏筛选按钮
+    const gameTabs = document.querySelectorAll('.game-tab');
+    gameTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const gameName = this.getAttribute('data-game');
+            switchGameFilter(gameName);
+        });
+    });
+    
     // 搜索功能
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
@@ -169,41 +193,86 @@ function setupEventListeners() {
     });
 }
 
-// 执行搜索
-function performSearch() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+// 切换游戏筛选
+function switchGameFilter(gameName) {
+    // 更新按钮状态
+    document.querySelectorAll('.game-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelector(`[data-game="${gameName}"]`).classList.add('active');
     
-    if (searchTerm === '') {
-        filteredData = [...leaderboardData];
-    } else {
-        filteredData = leaderboardData.filter(player => 
+    // 更新当前筛选
+    currentGameFilter = gameName;
+    
+    // 重新应用所有筛选
+    applyAllFilters();
+}
+
+// 应用所有筛选条件
+function applyAllFilters() {
+    let data = [...leaderboardData];
+    
+    // 应用游戏筛选
+    if (currentGameFilter !== 'all') {
+        data = filterByGame(data, currentGameFilter);
+    }
+    
+    // 应用搜索筛选
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (searchTerm !== '') {
+        data = data.filter(player => 
             player.id.toLowerCase().includes(searchTerm) || 
             player.name.toLowerCase().includes(searchTerm)
         );
     }
     
+    // 应用排名筛选
+    const rankFilter = document.getElementById('rankFilter').value;
+    if (rankFilter !== 'all') {
+        data = filterByRankValue(data, rankFilter);
+    }
+    
+    filteredData = data;
     renderLeaderboard();
     updateStats();
 }
 
-// 按排名筛选
-function filterByRank(filterValue) {
-    switch (filterValue) {
-        case 'top10':
-            filteredData = leaderboardData.filter(player => player.rank <= 10);
-            break;
-        case 'top50':
-            filteredData = leaderboardData.filter(player => player.rank <= 50);
-            break;
-        case 'top100':
-            filteredData = leaderboardData.filter(player => player.rank <= 100);
-            break;
-        default:
-            filteredData = [...leaderboardData];
+// 按游戏筛选
+function filterByGame(data, gameName) {
+    if (gameName === 'all') {
+        return data;
     }
     
-    renderLeaderboard();
-    updateStats();
+    // 按该游戏得分排序
+    return data.sort((a, b) => {
+        const scoreA = a.scores[gameName] || 0;
+        const scoreB = b.scores[gameName] || 0;
+        return scoreB - scoreA; // 降序排列
+    });
+}
+
+// 按排名筛选（内部函数）
+function filterByRankValue(data, filterValue) {
+    switch (filterValue) {
+        case 'top10':
+            return data.filter(player => player.rank <= 10);
+        case 'top50':
+            return data.filter(player => player.rank <= 50);
+        case 'top100':
+            return data.filter(player => player.rank <= 100);
+        default:
+            return data;
+    }
+}
+
+// 执行搜索
+function performSearch() {
+    applyAllFilters();
+}
+
+// 按排名筛选
+function filterByRank(filterValue) {
+    applyAllFilters();
 }
 
 // 更新统计信息
@@ -212,11 +281,26 @@ function updateStats() {
     const displayedCount = filteredData.length;
     const totalParticipants = leaderboardData.length;
     
-    if (displayedCount === totalParticipants) {
-        totalCount.textContent = `总参与人数: ${totalParticipants}人`;
+    let statsText = '';
+    
+    if (currentGameFilter === 'all') {
+        if (displayedCount === totalParticipants) {
+            statsText = `总参与人数: ${totalParticipants}人`;
+        } else {
+            statsText = `显示: ${displayedCount}人 / 总参与人数: ${totalParticipants}人`;
+        }
     } else {
-        totalCount.textContent = `显示: ${displayedCount}人 / 总参与人数: ${totalParticipants}人`;
+        const gameName = currentGameFilter;
+        const maxScore = gameConfig.games.find(g => g.name === gameName)?.maxScore || 0;
+        const perfectScores = filteredData.filter(p => p.scores[gameName] === maxScore).length;
+        
+        statsText = `${gameName}排行榜: ${displayedCount}人`;
+        if (perfectScores > 0) {
+            statsText += ` | 满分人数: ${perfectScores}人`;
+        }
     }
+    
+    totalCount.textContent = statsText;
 }
 
 // 显示错误信息

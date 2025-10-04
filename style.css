@@ -53,6 +53,120 @@ body {
     line-height: 1.8;
 }
 
+/* 游戏筛选按钮组样式 */
+.game-filter-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.game-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    background: white;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-tab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border-color: #3498db;
+}
+
+.game-tab.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.game-tab.active:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+.tab-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.tab-text {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* 总排行榜按钮特殊样式 */
+.game-tab[data-game="all"] {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    border-color: #f39c12;
+    font-weight: 700;
+}
+
+.game-tab[data-game="all"]:not(.active) {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    border-color: #f39c12;
+}
+
+.game-tab[data-game="all"]:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+}
+
+/* 线上游戏按钮样式 */
+.game-tab[data-game="完美拼图"],
+.game-tab[data-game="牌号对对碰"],
+.game-tab[data-game="色彩陷阱"],
+.game-tab[data-game="数字炸弹"] {
+    border-left: 4px solid #3498db;
+}
+
+.game-tab[data-game="完美拼图"]:hover,
+.game-tab[data-game="牌号对对碰"]:hover,
+.game-tab[data-game="色彩陷阱"]:hover,
+.game-tab[data-game="数字炸弹"]:hover {
+    border-color: #3498db;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+/* 线下游戏按钮样式 */
+.game-tab[data-game="拼速达人"],
+.game-tab[data-game="碰碰乐"],
+.game-tab[data-game="沙包投掷"],
+.game-tab[data-game="巧手取棒"] {
+    border-left: 4px solid #e74c3c;
+}
+
+.game-tab[data-game="拼速达人"]:hover,
+.game-tab[data-game="碰碰乐"]:hover,
+.game-tab[data-game="沙包投掷"]:hover,
+.game-tab[data-game="巧手取棒"]:hover {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
 /* 控制面板样式 */
 .controls {
     display: flex;
@@ -305,6 +419,25 @@ body {
     
     .description {
         font-size: 1rem;
+    }
+    
+    .game-filter-tabs {
+        gap: 8px;
+        padding: 15px;
+    }
+    
+    .game-tab {
+        min-width: 100px;
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+    
+    .tab-icon {
+        font-size: 16px;
+    }
+    
+    .tab-text {
+        font-size: 11px;
     }
     
     .controls {
