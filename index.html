@@ -14,20 +14,7 @@
         <header>
             <h1>🏆 游园活动排行榜</h1>
             <p>八个游戏总分排行榜</p>
-            <div class="header-buttons">
-                <button class="refresh-btn" onclick="refreshLeaderboard()">🔄 刷新</button>
-                <button class="refresh-btn" onclick="exportTotalLeaderboard()">📤 导出</button>
-            </div>
         </header>
-
-        <!-- 加载状态 -->
-        <div id="loading" class="loading hidden">
-            <div class="spinner"></div>
-            <p>正在加载排行榜数据...</p>
-        </div>
-
-        <!-- 消息提示 -->
-        <div id="message" class="message hidden"></div>
 
         <!-- 总体统计 -->
         <div class="stats-overview">
@@ -41,8 +28,9 @@
             <div class="stat-card">
                 <div class="stat-icon">🎮</div>
                 <div class="stat-content">
-                    <div class="stat-number" id="totalGames">8</div>
-                    <div class="stat-label">游戏总数</div>
+                    <div class="stat-number" id="totalGames">4092</div>
+                    <div class="stat-label">参与人次</div>
+                    <div class="stat-detail">线上 1983 | 线下 2109</div>
                 </div>
             </div>
             <div class="stat-card">

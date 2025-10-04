@@ -37,39 +37,6 @@ header p {
     margin-bottom: 20px;
 }
 
-/* 头部按钮 */
-.header-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.refresh-btn {
-    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.refresh-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
-}
-
-.refresh-btn:active {
-    transform: translateY(0);
-}
-
 /* 统计概览 */
 .stats-overview {
     display: grid;
@@ -115,6 +82,13 @@ header p {
     color: #666;
     font-size: 0.9rem;
     font-weight: 500;
+}
+
+.stat-detail {
+    color: #999;
+    font-size: 0.75rem;
+    margin-top: 3px;
+    font-weight: 400;
 }
 
 /* 游戏选择器 */
@@ -448,67 +422,6 @@ header p {
     margin: 0;
 }
 
-/* 加载动画 */
-.loading {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    text-align: center;
-    z-index: 2000;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #667eea;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 15px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* 消息提示 */
-.message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
-    z-index: 2000;
-    animation: messageSlideIn 0.3s ease;
-}
-
-.message.success {
-    background: #28a745;
-}
-
-.message.error {
-    background: #dc3545;
-}
-
-@keyframes messageSlideIn {
-    from {
-        opacity: 0;
-        transform: translateX(100px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
 /* 工具类 */
 .hidden {
     display: none !important;
@@ -606,22 +519,6 @@ header p {
     .game-score {
         font-size: 0.65rem;
         padding: 2px 5px;
-    }
-    
-    .header-buttons {
-        flex-direction: row;
-        gap: 10px;
-        align-items: stretch;
-        justify-content: center;
-        flex-wrap: nowrap;
-    }
-    
-    .refresh-btn {
-        flex: 1 1 0;
-        width: auto;
-        max-width: none;
-        justify-content: center;
-        white-space: nowrap;
     }
     
     .modal-content {

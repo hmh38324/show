@@ -461,8 +461,6 @@ let currentGameFilter = 'all';
 let currentData = [...LEADERBOARD_DATA];
 
 // DOM 元素
-const loading = document.getElementById('loading');
-const message = document.getElementById('message');
 const totalParticipants = document.getElementById('totalParticipants');
 const totalScore = document.getElementById('totalScore');
 const leaderboardTitle = document.getElementById('leaderboardTitle');
@@ -643,66 +641,4 @@ function showPlayerDetail(employeeId, employeeName) {
 function closeGameDetail() {
     gameDetailModal.style.display = 'none';
     document.body.style.overflow = 'auto';
-}
-
-// 刷新排行榜
-function refreshLeaderboard() {
-    showMessage('数据已刷新！', 'success');
-    initializeLeaderboard();
-}
-
-// 导出总排行榜（CSV）
-function exportTotalLeaderboard() {
-    if (!LEADERBOARD_DATA || LEADERBOARD_DATA.length === 0) {
-        showMessage('暂无数据可导出', 'error');
-        return;
-    }
-
-    // 构建表头
-    const headers = ['排名', '工号', '姓名', ...GAMES.map(g => g.name), '总分'];
-
-    // 转换为CSV
-    const rows = LEADERBOARD_DATA.map((player) => {
-        const row = [
-            player.rank,
-            player.id,
-            player.name,
-            ...player.scores,
-            player.total
-        ];
-        return row.map(v => {
-            const s = String(v).replace(/"/g, '""');
-            if (/[",\n]/.test(s)) {
-                return `"${s}"`;
-            }
-            return s;
-        }).join(',');
-    });
-
-    const csvContent = ['\ufeff' + headers.join(','), ...rows].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    const ts = new Date();
-    const tsStr = `${ts.getFullYear()}-${String(ts.getMonth() + 1).padStart(2, '0')}-${String(ts.getDate()).padStart(2, '0')}_${String(ts.getHours()).padStart(2, '0')}${String(ts.getMinutes()).padStart(2, '0')}`;
-    a.href = url;
-    a.download = `游园活动排行榜_${tsStr}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    showMessage('导出成功，已开始下载');
-}
-
-// 显示消息
-function showMessage(text, type = 'success') {
-    message.textContent = text;
-    message.className = `message ${type}`;
-    message.classList.remove('hidden');
-    
-    setTimeout(() => {
-        message.classList.add('hidden');
-    }, 3000);
 }
