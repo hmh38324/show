@@ -459,6 +459,7 @@ const LEADERBOARD_DATA = [
 // 全局变量
 let currentGameFilter = 'all';
 let currentData = [...LEADERBOARD_DATA];
+let searchQuery = '';
 
 // DOM 元素
 const totalParticipants = document.getElementById('totalParticipants');
@@ -470,6 +471,8 @@ const emptyState = document.getElementById('emptyState');
 const gameDetailModal = document.getElementById('gameDetailModal');
 const gameDetailTitle = document.getElementById('gameDetailTitle');
 const gameStats = document.getElementById('gameStats');
+const searchInput = document.getElementById('searchInput');
+const clearSearchBtn = document.getElementById('clearSearch');
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -485,6 +488,26 @@ function setupEventListeners() {
             const game = this.dataset.game;
             selectGame(game);
         });
+    });
+
+    // 搜索功能
+    searchInput.addEventListener('input', function(e) {
+        searchQuery = e.target.value.trim().toLowerCase();
+        if (searchQuery) {
+            clearSearchBtn.classList.remove('hidden');
+        } else {
+            clearSearchBtn.classList.add('hidden');
+        }
+        updateLeaderboard();
+    });
+
+    // 清除搜索
+    clearSearchBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        searchQuery = '';
+        clearSearchBtn.classList.add('hidden');
+        updateLeaderboard();
+        searchInput.focus();
     });
 
     // 关闭游戏详情弹窗
@@ -518,12 +541,16 @@ function selectGame(game) {
     document.querySelector(`[data-game="${game}"]`).classList.add('active');
 
     currentGameFilter = game;
-    
-    if (game === 'all') {
+    updateLeaderboard();
+}
+
+// 更新排行榜（处理游戏筛选和搜索）
+function updateLeaderboard() {
+    if (currentGameFilter === 'all') {
         currentData = [...LEADERBOARD_DATA];
         leaderboardTitle.textContent = '全部游戏排行榜';
     } else {
-        const gameIndex = parseInt(game);
+        const gameIndex = parseInt(currentGameFilter);
         const gameInfo = GAMES[gameIndex];
         leaderboardTitle.textContent = `${gameInfo.icon} ${gameInfo.name} 排行榜`;
         
@@ -531,6 +558,14 @@ function selectGame(game) {
         currentData = [...LEADERBOARD_DATA]
             .filter(player => player.scores[gameIndex] > 0)
             .sort((a, b) => b.scores[gameIndex] - a.scores[gameIndex]);
+    }
+    
+    // 应用搜索过滤
+    if (searchQuery) {
+        currentData = currentData.filter(player => 
+            player.id.toLowerCase().includes(searchQuery) || 
+            player.name.toLowerCase().includes(searchQuery)
+        );
     }
     
     displayLeaderboard(currentData);
